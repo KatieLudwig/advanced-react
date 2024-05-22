@@ -249,7 +249,7 @@ test('AppFunctional is a functional component', () => {
           Limit reached message should be "You can't go up"`, () => {
         fireEvent.click(up)
         fireEvent.click(up)
-        expect(message.textContent).toBe("You can't go up")
+        expect(message.textContent).toBe("You can't go up") // what's wrong
       })
       test(`[C4 ${label}] Actions: up, left
           Limit reached message should be empty`, () => {
@@ -262,7 +262,7 @@ test('AppFunctional is a functional component', () => {
         fireEvent.click(up)
         fireEvent.click(left)
         fireEvent.click(left)
-        expect(message.textContent).toBe("You can't go left")
+        expect(message.textContent).toBe("You can't go left") //what's wrong
       })
       test(`[C6 ${label}] Actions: up, right
           Limit reached message should be empty`, () => {
@@ -275,7 +275,7 @@ test('AppFunctional is a functional component', () => {
         fireEvent.click(up)
         fireEvent.click(right)
         fireEvent.click(right)
-        expect(message.textContent).toBe("You can't go right")
+        expect(message.textContent).toBe("You can't go right") // what's wrong
       })
       test(`[C8 ${label}] Actions: right
           Limit reached message should be empty`, () => {
@@ -286,7 +286,7 @@ test('AppFunctional is a functional component', () => {
           Limit reached message should be (3,2)`, () => {
         fireEvent.click(right)
         fireEvent.click(right)
-        expect(message.textContent).toBe("You can't go right")
+        expect(message.textContent).toBe("You can't go right") //what's wrong
       })
       test(`[C10 ${label}] Actions: right, down
           Limit reached message should be empty`, () => {
@@ -299,7 +299,7 @@ test('AppFunctional is a functional component', () => {
         fireEvent.click(right)
         fireEvent.click(down)
         fireEvent.click(down)
-        expect(message.textContent).toBe("You can't go down")
+        expect(message.textContent).toBe("You can't go down") //error message
       })
       test(`[C12 ${label}] Actions: down, left
           Limit reached message should be empty`, () => {
