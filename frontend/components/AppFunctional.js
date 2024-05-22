@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 // Suggested initial states
 const initialMessage = ''
@@ -17,10 +18,9 @@ export default function AppFunctional(props) {
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
-    return {
-      x: (index % 3) + 1,
-      y: Math.floor(index / 3) + 1,
-    }
+    const x = (index % 3) + 1;
+    const y = Math.floor(index / 3) + 1;
+    return { x, y }
   }
 
   function getXYMessage() {
@@ -43,19 +43,13 @@ export default function AppFunctional(props) {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
-    const { x, y } = getXY()
-    switch (direction) {
-      case 'left':
-        return x > 1 ? index - 1 : index
-      case 'up':
-        return y > 1 ? index - 3 : index
-      case 'right':
-        return x < 3 ? index + 1 : index
-      case 'down':
-        return y < 3 ? index + 3 : index
-      default:
-        return index
-    }
+    const moves = {
+      left: index % 3 !== 0 ? index - 1 : index,
+      right: index % 3 !== 2 ? index + 1 : index,
+      up: index >= 3 ? index - 3 : index,
+      down: index < 6 ? index + 3 : index,
+    };
+    return moves[direction]
   }
 
   function move(evt) {
@@ -64,42 +58,32 @@ export default function AppFunctional(props) {
     const direction = evt.target.id
     const nextIndex = getNextIndex(direction)
     if (nextIndex !== index) {
-      setIndex(nextIndex)
-      setSteps(steps + 1)
+      setIndex(nextIndex);
+      setSteps(steps + 1);
+      setMessage('');
+    } else {
+      setMessage(`You can't go ${direction}`);
     }
   }
 
   function onChange(evt) {
     // You will need this to update the value of the input.
-    const { id, value } = evt.target
-    if(id === 'email') {
-      setEmail(value)
-    }
+    setEmail(evt.target.value)
   }
 
   async function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
     evt.preventDefault()
-    try {
-      const response = await fetch('http://localhost:9000/api/result', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email})
-    })
-    const data = await response.jason()
-    setMessage(data.message)
-  } catch (error) {
-    setMessage('Error submitting form')
-  }
+    axios.post('http://localhost:9000/api/result', { email, steps })
+      .then(response => setMessage(response.data.message))
+      .catch(error => setMessage(error.response.data.message))
   }
 
   return (
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved {steps} times</h3>
+        <h3 id="steps">You moved {steps} {steps === 1 ? 'time' : 'times'}</h3>
       </div>
       <div id="grid">
         {
